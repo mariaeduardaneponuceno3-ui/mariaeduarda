@@ -1,16 +1,15 @@
 {
-  "name": "mariaeduarda",
+  "name": "majuu-next",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
-    "next": "14.2.15",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "next": "14.2.25",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
