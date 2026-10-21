@@ -1,39 +1,15 @@
-"use client";
+import { redirect } from "next/navigation";
+import { createClient } from "../lib/supabase/server";
+import Analyzer from "../components/analyzer";
+import SignOut from "../components/sign-out";
 
-import { useState } from "react";
+export const dynamic = "force-dynamic";
 
-const TEXTOS = {
-  titulo: "Meu Analisador",
-  subtitulo: "Digite um texto abaixo e clique em Analisar.",
-  botao: "Analisar",
-};
+export default async function Home() {
+  const supabase = createClient();
+  if (!supabase) redirect("/login");
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error || !user) redirect("/login");
 
-export default function Home() {
-  const [texto, setTexto] = useState("");
-  const [resposta, setResposta] = useState("");
-
-  function analisar() {
-    setResposta(texto);
-  }
-
-  return (
-    <main className="pagina">
-      <section className="caixa">
-        <h1>{TEXTOS.titulo}</h1>
-        <p>{TEXTOS.subtitulo}</p>
-
-        <textarea
-          value={texto}
-          onChange={(e) => setTexto(e.target.value)}
-          placeholder="Digite seu texto aqui..."
-        />
-
-        <button onClick={analisar}>{TEXTOS.botao}</button>
-
-        <div className="resposta">
-          {resposta}
-        </div>
-      </section>
-    </main>
-  );
+  return <><header className="topo"><span>{user.email}</span><SignOut /></header><Analyzer /></>;
 }

@@ -76,3 +76,29 @@ button:hover {
   border-radius: 10px;
   white-space: pre-wrap;
 }
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 24px;
+  background: var(--cor-caixa);
+  overflow-wrap: anywhere;
+}
+
+.topo button { margin-top: 0; }
+.topo + .pagina { min-height: calc(100vh - 80px); }
+label { display: block; margin: 16px 0 8px; }
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  font: inherit;
+}
+.acoes-login { display: flex; gap: 12px; flex-wrap: wrap; }
+button:disabled { opacity: .6; cursor: wait; }
+[role="alert"] { color: #b91c1c; }
+[role="status"] { color: #166534; }
