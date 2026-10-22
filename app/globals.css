@@ -109,3 +109,12 @@ input {
 button:disabled { opacity: .6; cursor: wait; }
 [role="alert"] { color: #b91c1c; }
 [role="status"] { color: #166534; }
+
+.topo-acoes, .paginacao { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.topo a, .pagina-historico a { color: var(--cor-botao); }
+.pagina-historico { align-items: flex-start; }
+.registro-historico { border-top: 1px solid var(--cor-borda); margin-top: 24px; padding-top: 16px; }
+.registro-historico h2 { font-size: 1.15rem; }
+.registro-historico summary { cursor: pointer; color: var(--cor-botao); }
+.texto-historico { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; margin-top: 16px; }
+.paginacao { margin-top: 24px; justify-content: space-between; }

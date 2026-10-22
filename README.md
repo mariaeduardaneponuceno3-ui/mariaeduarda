@@ -49,9 +49,41 @@ Para usar IA real, configure `OPENROUTER_API_KEY` somente no servidor, altere
 `modoTeste` para `false` e faça um novo build. Em ambientes com rede restrita,
 permita o domínio `openrouter.ai`. O modelo é lido do arquivo e `max_tokens` é 900.
 
-As respostas não são persistidas no Supabase nesta implementação. O aviso foi
-mantido conforme solicitado, mas sua afirmação sobre armazenamento na conta
-depende de uma futura implementação de persistência com acesso por usuária.
+Quando uma avaliação é gerada, a API salva em `public.respostas` os campos reunidos
+com seus rótulos em `entrada`, o retorno em `resposta` e o id da pessoa autenticada
+em `user_id`, usando a sessão Supabase da própria pessoa. Não usa `service_role` e
+ignora qualquer `user_id` enviado pelo navegador. A data vem do banco (`created_at`).
+Se o salvamento falhar, a avaliação continua visível e um aviso informa que ela
+não foi salva; o site não chama a IA novamente automaticamente.
+
+## Banco e histórico
+
+Antes de usar o histórico em produção, abra o projeto no **Supabase → SQL Editor**,
+crie uma consulta, copie todo o arquivo
+`supabase/migrations/202610220001_respostas_historico.sql` e execute com **Run**.
+A migração pode ser reexecutada e mantém a tabela existente. Adiciona as colunas
+ausentes, os valores padrão e as políticas RLS de leitura e inserção por `auth.uid()`.
+Uma política restritiva limita também políticas permissivas preexistentes. Nenhuma
+chave administrativa deve ser adicionada ao site para contornar RLS.
+
+Os campos usados são `id`, `user_id` (uuid), `entrada` (text), `resposta` (text) e
+`created_at` (timestamptz). Se a tabela existente tiver tipos incompatíveis ou outras
+colunas obrigatórias sem valores padrão, revise a estrutura antes de usá-la;
+não apague os registros nem desative RLS. A migração não atribui registros antigos
+a uma pessoa por suposição e não inventa suas datas: linhas sem `user_id` ficam
+invisíveis para as contas; datas ausentes aparecem como “Data não registrada”.
+
+`/historico` verifica a sessão no servidor, filtra por `user_id` e mostra as avaliações
+da pessoa logada, da mais recente para a mais antiga, com 20 por página e datas em
+horário de Brasília. O banco também aplica o isolamento entre contas por RLS.
+O topo inclui “Meu histórico” ao lado de “Sair”. A página e as respostas da API não
+são conteúdo público ou cache compartilhado entre contas.
+
+`npm run test:historico` executa a migração em PostgreSQL local (PGlite) para testar
+a preservação de uma tabela antiga, reexecução, criação de tabela nova e isolamento
+de contas mesmo com uma política permissiva antiga. `npm run test:auth` inclui os
+testes no navegador de salvamento, listagem, histórico vazio, falha ao salvar e duas
+contas diferentes. Esses testes não aplicam a migração no Supabase de produção.
 
 Execute `npm run test:ia` para testar a montagem do prompt e o cliente OpenRouter
 com chamadas simuladas. `npm run test:auth` também testa o formulário, a API com

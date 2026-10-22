@@ -1,6 +1,8 @@
 import { desafio } from "../../../desafio";
 import { avaliarRespostas, ErroIA } from "../../../lib/ia.mjs";
 import { createClient } from "../../../lib/supabase/server";
+import { montarEntrada } from "../../../lib/historico.mjs";
+import { revalidatePath } from "next/cache";
 
 export const runtime = "nodejs";
 
@@ -18,7 +20,24 @@ export async function POST(request) {
     try { valores = await request.json(); } catch {
       return texto("Não foi possível ler os dados enviados. Envie um formulário válido.", 400);
     }
-    return texto(await avaliarRespostas(desafio, valores, { chave: process.env.OPENROUTER_API_KEY }));
+    const respostaIA = await avaliarRespostas(desafio, valores, { chave: process.env.OPENROUTER_API_KEY });
+    let salvo = false;
+    try {
+      const { error: saveError } = await supabase.from("respostas").insert({
+        user_id: user.id,
+        entrada: montarEntrada(desafio.campos, valores),
+        resposta: respostaIA,
+      });
+      salvo = !saveError;
+      if (salvo) revalidatePath("/historico");
+      if (saveError) console.error("[historico] Falha ao salvar avaliação", { codigo: saveError.code || "gravacao_recusada" });
+    } catch {
+      console.error("[historico] Falha ao salvar avaliação", { codigo: "falha_conexao" });
+    }
+    // Preserve the generated answer if storage fails; do not charge for another generation.
+    const response = texto(respostaIA);
+    response.headers.set("X-Historico-Salvo", String(salvo));
+    return response;
   } catch (error) {
     if (error instanceof ErroIA) {
       // No keys, provider response bodies, user answers, or email addresses in logs.

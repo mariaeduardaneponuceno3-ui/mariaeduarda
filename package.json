@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "test:auth": "playwright test",
-    "test:ia": "node --test scripts/tests/ia.test.mjs"
+    "test:ia": "node --test scripts/tests/ia.test.mjs",
+    "test:historico": "node --test scripts/tests/historico.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -17,6 +18,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.11",
     "@playwright/test": "^1.64.1"
   }
 }
