@@ -45,7 +45,6 @@ p {
 
 textarea {
   width: 100%;
-  min-height: 140px;
   padding: 14px;
   border: 1px solid var(--cor-borda);
   border-radius: 10px;
@@ -75,6 +74,14 @@ button:hover {
   border: 1px solid var(--cor-borda);
   border-radius: 10px;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.aviso {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 .topo {

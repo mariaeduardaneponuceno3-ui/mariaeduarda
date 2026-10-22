@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test:auth": "playwright test"
+    "test:auth": "playwright test",
+    "test:ia": "node --test scripts/tests/ia.test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

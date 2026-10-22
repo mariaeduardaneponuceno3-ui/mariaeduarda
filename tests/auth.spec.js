@@ -4,7 +4,7 @@ test("visitante é redirecionada sem receber o analisador", async ({ request, pa
   const response = await request.get("/", { maxRedirects: 0 });
   expect(response.status()).toBe(307);
   expect(response.headers().location).toBe("/login");
-  expect(await response.text()).not.toContain("Meu Analisador");
+  expect(await response.text()).not.toContain("Treino de entrevista");
   await page.goto("/");
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.getByRole("button", { name: "Entrar", exact: true })).toBeVisible();
@@ -43,10 +43,10 @@ test("login persiste após recarregar e sair remove o acesso", async ({ page }) 
   await expect(page).toHaveURL("http://127.0.0.1:3100/");
   await expect(page.getByRole("banner")).toContainText("maria@example.com");
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Meu Analisador" })).toBeVisible();
-  await page.getByRole("textbox").fill("Texto de exemplo");
-  await page.getByRole("button", { name: "Analisar", exact: true }).click();
-  await expect(page.locator(".resposta")).toHaveText("Texto de exemplo");
+  await expect(page.getByRole("heading", { name: "Treino de entrevista" })).toBeVisible();
+  await page.getByLabel("Me fale um pouco sobre você").fill("Texto de exemplo");
+  await page.getByRole("button", { name: "Avaliar minhas respostas", exact: true }).click();
+  await expect(page.locator(".resposta")).toContainText("EXEMPLO — MODO DE TESTE");
   await page.goto("/login");
   await expect(page).toHaveURL("http://127.0.0.1:3100/");
   await page.getByRole("button", { name: "Sair", exact: true }).click();
@@ -79,5 +79,5 @@ test("cookie com identidade forjada não libera a página", async ({ context, pa
   await context.addCookies([{ name: "sb-127-auth-token", value: "base64-" + encode(session), domain: "127.0.0.1", path: "/" }]);
   await page.goto("/");
   await expect(page).toHaveURL(/\/login$/);
-  await expect(page.getByRole("heading", { name: "Meu Analisador" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Treino de entrevista" })).toHaveCount(0);
 });
