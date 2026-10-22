@@ -1,15 +1,33 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { desafio } from "../../desafio.js";
-import { avaliarRespostas, montarPrompt } from "../../lib/ia.mjs";
+import { avaliarRespostas, montarPrompt, normalizarChave } from "../../lib/ia.mjs";
 
 const valores = { vaga: "Aprendiz", resposta1: "Sou estudante", resposta2: "Quero aprender", resposta3: "Ajudei minha turma" };
 const real = { ...desafio, modoTeste: false };
 
 test("modo de teste não chama IA nem exige chave", async () => {
-  const texto = await avaliarRespostas(desafio, valores, { fetcher: () => assert.fail("Não deveria acessar a rede") });
+  const texto = await avaliarRespostas({ ...desafio, modoTeste: true }, valores, { fetcher: () => assert.fail("Não deveria acessar a rede") });
   assert.match(texto, /EXEMPLO — MODO DE TESTE/);
   assert.match(texto, /RESPOSTA 3/);
+});
+
+test("chave copiada com espaços, aspas ou Bearer é normalizada antes de enviar", async () => {
+  for (const chave of ["  teste  \n", '"teste"', "'teste'", "Bearer teste", '"Bearer teste"', 'Bearer "teste"']) {
+    assert.equal(normalizarChave(chave), "teste");
+    await avaliarRespostas(real, valores, { chave, fetcher: async (_, options) => {
+      assert.equal(options.headers.Authorization, "Bearer teste");
+      return Response.json({ choices: [{ message: { content: "ok" } }] });
+    } });
+  }
+  for (const chave of ["", "  ", "parte parte", "parte\nparte", "parte\u200Bparte"]) {
+    assert.throws(() => normalizarChave(chave), error => error.status === 503);
+  }
+});
+
+test("sem créditos e tempo esgotado não são tratados como chave inválida", async () => {
+  await assert.rejects(avaliarRespostas(real, valores, { chave: "teste", fetcher: async () => new Response(null, { status: 402 }) }), error => error.status === 402 && error.codigo === "creditos_insuficientes");
+  await assert.rejects(avaliarRespostas(real, valores, { chave: "teste", fetcher: async () => { throw new DOMException("Timed out", "TimeoutError"); } }), error => error.status === 504 && error.codigo === "tempo_esgotado");
 });
 
 test("substituição usa todos os ids e preserva texto literal sem substituir recursivamente", () => {

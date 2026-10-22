@@ -1,6 +1,7 @@
 // Local Supabase Auth protocol fixture. No external service or real credentials.
 import { createServer } from "node:http";
 import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const user = { id: "12345678-1234-4234-8234-123456789abc", email: "maria@example.com", aud: "authenticated", role: "authenticated", app_metadata: { provider: "email" }, user_metadata: {}, created_at: new Date().toISOString() };
 const encode = value => Buffer.from(JSON.stringify(value)).toString("base64url");
@@ -34,7 +35,14 @@ const server = createServer(async (req, res) => {
 await new Promise(resolve => server.listen(4400, "127.0.0.1", resolve));
 const app = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev", "--hostname", "127.0.0.1", "--port", "3100"], {
   stdio: "inherit",
-  env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1", NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:4400", NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-public-key" },
+  env: {
+    ...process.env,
+    NODE_OPTIONS: `${process.env.NODE_OPTIONS || ""} --require ${fileURLToPath(new URL("./openrouter.cjs", import.meta.url))}`,
+    OPENROUTER_API_KEY: "test-openrouter-key",
+    NEXT_TELEMETRY_DISABLED: "1",
+    NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:4400",
+    NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "test-public-key",
+  },
 });
 function stop() { app.kill("SIGTERM"); server.close(); }
 process.on("SIGTERM", stop);

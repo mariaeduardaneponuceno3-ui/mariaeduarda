@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { desafio } from "../desafio";
+import { mensagemErroIA } from "../lib/ia-errors.mjs";
 
 export default function Analyzer() {
   const [valores, setValores] = useState({});
@@ -24,9 +25,7 @@ export default function Analyzer() {
         body: JSON.stringify(Object.fromEntries(desafio.campos.map(({ id }) => [id, valores[id] || ""]))),
       });
       const texto = await response.text();
-      if (response.status === 429) throw new Error("Você atingiu o limite de uso de hoje.");
-      if (response.status === 401) throw new Error("Chave da IA inválida.");
-      if (!response.ok) throw new Error("Não foi possível avaliar suas respostas. Tente novamente em alguns instantes.");
+      if (!response.ok) throw new Error(mensagemErroIA(response.status));
       if (!texto.trim()) throw new Error("A IA não retornou uma resposta. Tente novamente.");
       setResposta(texto);
     } catch (error) {

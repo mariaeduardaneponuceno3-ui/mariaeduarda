@@ -20,7 +20,12 @@ export async function POST(request) {
     }
     return texto(await avaliarRespostas(desafio, valores, { chave: process.env.OPENROUTER_API_KEY }));
   } catch (error) {
-    if (error instanceof ErroIA) return texto(error.message, error.status);
+    if (error instanceof ErroIA) {
+      // No keys, provider response bodies, user answers, or email addresses in logs.
+      console.error("[ia] Falha na avaliação", { status: error.status, codigo: error.codigo });
+      return texto(error.message, error.status);
+    }
+    console.error("[ia] Falha interna na avaliação", { status: 500, codigo: "erro_interno" });
     return texto("Não foi possível concluir a análise. Tente novamente em alguns instantes.", 500);
   }
 }

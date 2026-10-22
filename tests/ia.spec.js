@@ -14,7 +14,7 @@ test("API rejeita visitante sem sessão", async ({ request }) => {
   expect(await response.text()).toContain("Entre na sua conta");
 });
 
-test("formulário usa desafio e recebe texto de exemplo pela API", async ({ page }) => {
+test("formulário envia à API e recebe uma avaliação com OpenRouter simulado", async ({ page }) => {
   await entrar(page);
   await expect(page.getByRole("heading", { name: "Treino de entrevista" })).toBeVisible();
   await expect(page.getByText("Cole a vaga, responda e receba um retorno honesto", { exact: true })).toBeVisible();
@@ -39,7 +39,7 @@ test("formulário usa desafio e recebe texto de exemplo pela API", async ({ page
   await page.getByRole("button", { name: "Avaliar minhas respostas" }).click();
   await expect(page.getByRole("button", { name: "Analisando...", exact: true })).toBeDisabled();
   liberar();
-  await expect(page.locator(".resposta")).toContainText("EXEMPLO — MODO DE TESTE");
+  await expect(page.locator(".resposta")).toContainText("AVALIAÇÃO SIMULADA");
   expect(await page.locator(".resposta").textContent()).toContain("\n\nRESPOSTA 1\n");
   await expect(page.locator(".resposta")).toHaveCSS("white-space", "pre-wrap");
   await expect(page.getByRole("button", { name: "Avaliar minhas respostas" })).toBeEnabled();
@@ -49,7 +49,7 @@ test("formulário usa desafio e recebe texto de exemplo pela API", async ({ page
   expect(badFields.status()).toBe(400);
 });
 
-for (const [status, mensagem] of [[429, "Você atingiu o limite de uso de hoje."], [401, "Chave da IA inválida."], [500, "Não foi possível avaliar suas respostas."]]) {
+for (const [status, mensagem] of [[429, "Você atingiu o limite de uso de hoje."], [401, "Chave da IA inválida."], [402, "O serviço de IA está sem créditos"], [403, "Sua sessão expirou."], [503, "O serviço de IA não está configurado corretamente."], [504, "A IA demorou demais"], [500, "Não foi possível avaliar suas respostas."]]) {
   test(`erro ${status} é mostrado em português e permite tentar novamente`, async ({ page }) => {
     await entrar(page);
     await page.route("**/api/ia", route => route.fulfill({ status, contentType: "text/plain", body: "Internal upstream error" }));

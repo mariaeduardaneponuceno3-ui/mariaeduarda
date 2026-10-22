@@ -54,5 +54,27 @@ mantido conforme solicitado, mas sua afirmação sobre armazenamento na conta
 depende de uma futura implementação de persistência com acesso por usuária.
 
 Execute `npm run test:ia` para testar a montagem do prompt e o cliente OpenRouter
-com chamadas simuladas. `npm run test:auth` também testa o formulário, a API em modo
-de teste e as mensagens de erro no navegador, além dos fluxos de autenticação.
+com chamadas simuladas. `npm run test:auth` também testa o formulário, a API com
+OpenRouter simulado e as mensagens de erro no navegador, além da autenticação.
+O servidor de testes usa uma chave fictícia e intercepta a chamada OpenRouter
+somente no processo de teste; não consome créditos nem usa a chave de produção.
+
+### Diagnóstico da integração
+
+A chave é lida em tempo de execução somente no servidor. Espaços nas extremidades,
+aspas ao redor e um prefixo `Bearer` colado por engano são removidos antes do envio.
+Caracteres inválidos dentro da chave são rejeitados sem chamar a OpenRouter.
+
+As falhas são registradas nos logs da função `/api/ia` com o prefixo `[ia]`, status
+e código, sem chave, e-mail, respostas ou corpo de erro do provedor:
+
+- `chave_ausente` / `formato_chave_invalido` (503): configuração ausente ou malformada.
+- `chave_recusada_openrouter` (401): a OpenRouter recusou a credencial enviada.
+- `creditos_insuficientes` (402): saldo ou limite financeiro da chave.
+- `limite_requisicoes` (429): limite de requisições do provedor.
+- `tempo_esgotado` (504) / `falha_conexao` (502): demora ou falha na conexão.
+
+Após mudar uma variável na Vercel, faça um novo deployment do projeto e ambiente
+corretos; alterar somente a variável não atualiza uma função já publicada. Um erro
+401 persistente requer verificar a credencial ativa no projeto OpenRouter, não
+pode ser resolvido inventando uma chave ou retornando um exemplo como avaliação real.

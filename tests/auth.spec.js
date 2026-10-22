@@ -46,7 +46,7 @@ test("login persiste após recarregar e sair remove o acesso", async ({ page }) 
   await expect(page.getByRole("heading", { name: "Treino de entrevista" })).toBeVisible();
   await page.getByLabel("Me fale um pouco sobre você").fill("Texto de exemplo");
   await page.getByRole("button", { name: "Avaliar minhas respostas", exact: true }).click();
-  await expect(page.locator(".resposta")).toContainText("EXEMPLO — MODO DE TESTE");
+  await expect(page.locator(".resposta")).toContainText("AVALIAÇÃO SIMULADA");
   await page.goto("/login");
   await expect(page).toHaveURL("http://127.0.0.1:3100/");
   await page.getByRole("button", { name: "Sair", exact: true }).click();
