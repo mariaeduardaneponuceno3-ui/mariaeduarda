@@ -9,7 +9,7 @@ campos: [
 { id: "resposta3", rotulo: "Conte uma situação difícil que você resolveu", linhas: 4 }
 ],
 modelo: "openrouter/free",
-modoTeste: true,
+modoTeste: false,
 aviso: "Esta resposta foi escrita por uma inteligência artificial e pode conter erros. Use como ajuda, não como decisão final. O que você digitar fica guardado na sua conta e só você consegue ver.",
 prompt: `Você é um entrevistador experiente treinando jovens de 14 a 18 anos para a primeira
 entrevista de emprego.
