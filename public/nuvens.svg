@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="960" viewBox="0 0 1400 960" fill="none">
+  <defs>
+    <path id="nuvem" d="M40 104C21 104 8 91 8 74C8 58 21 45 38 45C40 25 57 11 77 14C89-3 117-4 132 13C156 7 178 21 181 43C205 39 225 55 225 76C225 93 211 104 192 104H40Z" stroke-width="2" stroke-linejoin="round"/>
+  </defs>
+  <g fill="#91AED0" stroke="#678DBB" opacity=".72">
+    <use href="#nuvem" transform="translate(-35 125) rotate(-8 112 55) scale(1.12)"/>
+    <use href="#nuvem" transform="translate(1150 440) rotate(7 112 55) scale(1.2)"/>
+    <use href="#nuvem" transform="translate(385 775) scale(.75)"/>
+  </g>
+  <g fill="#D481AB" stroke="#B96591" opacity=".65">
+    <use href="#nuvem" transform="translate(1160 60) rotate(6 112 55) scale(.95)"/>
+    <use href="#nuvem" transform="translate(20 610) rotate(-6 112 55) scale(1.08)"/>
+    <use href="#nuvem" transform="translate(745 335) scale(.72)"/>
+  </g>
+</svg>

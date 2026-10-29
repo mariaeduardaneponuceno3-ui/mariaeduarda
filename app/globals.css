@@ -37,7 +37,11 @@ body {
   font-family: "Segoe UI", Arial, sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  background: radial-gradient(ellipse at 8% 10%, #ffdfeb 0, transparent 45%), var(--cor-fundo);
+  background-color: var(--cor-fundo);
+  background-image: url("/nuvens.svg"), radial-gradient(ellipse at 8% 10%, #ffdfeb 0, transparent 45%);
+  background-size: 1400px 960px, 100% 100%;
+  background-position: center top;
+  background-repeat: repeat-y, no-repeat;
   color: var(--cor-texto);
 }
 button, input, textarea { font: inherit; }
@@ -209,6 +213,7 @@ button:disabled { opacity: .6; cursor: wait; }
 .link-botao:hover { color: #fff; background: var(--cor-botao-hover); }
 
 @media (max-width: 600px) {
+  body { background-size: 740px 508px, 100% 100%; background-position: left top; }
   .lista-dicas { grid-template-columns: 1fr; gap: 16px; }
   .link-botao { width: 100%; }
   .pagina { padding: 30px 16px 40px; }
