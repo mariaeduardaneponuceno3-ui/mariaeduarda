@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
     <html lang="pt-BR">
       <body>
         {children}
-        <footer className="rodape">Feito por [NOME DA DUPLA] · Do Zero ao Ar · Afesu Veleiros 2026</footer>
+        <footer className="rodape">Feito por Maria Eduarda e Julia Mayumi · Do Zero ao Ar · Afesu Veleiros 2026</footer>
       </body>
     </html>
   );
