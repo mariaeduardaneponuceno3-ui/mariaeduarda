@@ -46,29 +46,48 @@ export default function Analyzer() {
   }
 
   return (
-    <main className="pagina">
-      <section className="caixa">
-        <h1>{desafio.nome}</h1>
-        <p>{desafio.subtitulo}</p>
-        <form onSubmit={analisar}>
-          {desafio.campos.map(({ id, rotulo, linhas }) => (
-            <div key={id}>
-              <label htmlFor={id}>{rotulo}</label>
-              <textarea
-                id={id}
-                name={id}
-                rows={linhas}
-                value={valores[id] || ""}
-                onChange={(event) => setValores((atuais) => ({ ...atuais, [id]: event.target.value }))}
-                disabled={analisando}
-              />
-            </div>
-          ))}
-          <button type="submit" disabled={analisando}>{analisando ? "Analisando..." : desafio.botao}</button>
-          <small className="aviso">{desafio.aviso}</small>
-        </form>
+    <main className="pagina pagina-treino">
+      <section className="caixa caixa-treino">
+        <header className="intro-treino">
+          <span className="etiqueta">Prepare-se. Destaque-se. Suba.</span>
+          <h1>{desafio.nome}</h1>
+          <p className="slogan">Prepare-se hoje, e conquiste o seu amanhã</p>
+        </header>
+        <div className="cartao-formulario">
+          <p className="instrucao">{desafio.subtitulo}</p>
+          <form onSubmit={analisar}>
+            {desafio.campos.map(({ id, rotulo, linhas }, indice) => (
+              <div className="campo-treino" key={id}>
+                <span className="numero-campo" aria-hidden="true">{String(indice + 1).padStart(2, "0")}</span>
+                <div className="conteudo-campo">
+                  <label htmlFor={id}>{rotulo}</label>
+                  <textarea
+                    id={id}
+                    name={id}
+                    rows={linhas}
+                    value={valores[id] || ""}
+                    onChange={(event) => setValores((atuais) => ({ ...atuais, [id]: event.target.value }))}
+                    disabled={analisando}
+                  />
+                </div>
+              </div>
+            ))}
+            <button type="submit" disabled={analisando}>{analisando ? "Analisando..." : desafio.botao}</button>
+            <small className="aviso">{desafio.aviso}</small>
+          </form>
+        </div>
         {erro && <p role="alert">{erro}</p>}
-        <div className="resposta" role="status" aria-live="polite" aria-busy={analisando}>{resposta}</div>
+        <section className="cartao-resposta" aria-labelledby="titulo-retorno">
+          <div className="cabecalho-resposta">
+            <span className="estrela" aria-hidden="true">✦</span>
+            <div>
+              <span className="sobretitulo">Um passo de cada vez</span>
+              <h2 id="titulo-retorno">Seu retorno, com carinho e clareza.</h2>
+            </div>
+          </div>
+          <div className="resposta" role="status" aria-live="polite" aria-busy={analisando}>{resposta}</div>
+          {!resposta && !analisando && <p className="resposta-vazia">Sua avaliação aparece aqui depois de clicar em “{desafio.botao}”.</p>}
+        </section>
         {avisoHistorico && <p role="alert">{avisoHistorico}</p>}
       </section>
     </main>
