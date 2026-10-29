@@ -81,3 +81,29 @@ test("cookie com identidade forjada não libera a página", async ({ context, pa
   await expect(page).toHaveURL(/\/login$/);
   await expect(page.getByRole("heading", { name: "Treino de entrevista" })).toHaveCount(0);
 });
+
+for (const caso of [
+  { nome: "chave publicável recusada", status: 401, body: { message: "Invalid API key" }, esperado: "O Supabase recusou a configuração do site." },
+  { nome: "login por e-mail desativado", status: 400, body: { code: "email_provider_disabled", msg: "Email logins are disabled" }, esperado: "O login por e-mail está desativado" },
+  { nome: "serviço indisponível", status: 503, body: { message: "Project is unavailable" }, esperado: "O serviço de login está indisponível." },
+]) {
+  test(`login diferencia ${caso.nome} de senha incorreta`, async ({ page }) => {
+    await page.goto("/login");
+    await page.route("**/auth/v1/token?**", route => route.fulfill({
+      status: caso.status,
+      contentType: "application/json",
+      headers: {
+        "access-control-allow-origin": "http://127.0.0.1:3100",
+        "access-control-expose-headers": "x-supabase-api-version",
+        "x-supabase-api-version": "2024-01-01",
+      },
+      body: JSON.stringify(caso.body),
+    }));
+    await page.getByLabel("E-mail", { exact: true }).fill("maria@example.com");
+    await page.getByLabel("Senha", { exact: true }).fill("senha-correta");
+    await page.getByRole("button", { name: "Entrar", exact: true }).click();
+    await expect(page.getByRole("main").getByRole("alert")).toContainText(caso.esperado);
+    await expect(page).toHaveURL(/\/login$/);
+    await expect(page.getByRole("button", { name: "Entrar", exact: true })).toBeEnabled();
+  });
+}
