@@ -189,7 +189,19 @@ button:disabled { opacity: .6; cursor: wait; }
 .paginacao:empty { margin-top: 0; }
 .paginacao a { padding: 10px 0; font-weight: 600; }
 
+.pagina-dicas { align-items: flex-start; }
+.pagina-dicas .caixa { max-width: 960px; }
+.lista-dicas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; list-style: none; padding: 0; margin: 32px 0; }
+.cartao-dica { padding: 24px; border: 1px solid #d5deed; border-radius: 20px; background: #f4f8ff; }
+.cartao-dica .numero-campo { width: 34px; margin-bottom: 16px; }
+.cartao-dica h2 { font-size: 1.6rem; margin-bottom: 12px; }
+.cartao-dica p { margin: 0; }
+.link-botao { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 13px 24px; border-radius: 999px; background: var(--cor-botao); color: #fff; text-decoration: none; font-weight: 650; text-align: center; }
+.link-botao:hover { color: #fff; background: var(--cor-botao-hover); }
+
 @media (max-width: 600px) {
+  .lista-dicas { grid-template-columns: 1fr; gap: 16px; }
+  .link-botao { width: 100%; }
   .pagina { padding: 30px 16px 40px; }
   .caixa { border-radius: 22px; padding: 26px 20px; }
   .caixa-treino { padding: 0; }

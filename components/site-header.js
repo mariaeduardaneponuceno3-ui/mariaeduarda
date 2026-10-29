@@ -4,10 +4,15 @@ import SignOut from "./sign-out";
 export default function SiteHeader({ email }) {
   return (
     <header className="topo">
-      <span>{email}</span>
-      <nav className="topo-acoes" aria-label="Navegação da conta">
-        <Link href="/historico">Meu histórico</Link>
-        <SignOut />
+      {email ? <span>{email}</span> : <Link href="/">Treino de entrevista</Link>}
+      <nav className="topo-acoes" aria-label="Navegação do site">
+        <Link href="/dicas">Dicas</Link>
+        {email ? (
+          <>
+            <Link href="/historico">Meu histórico</Link>
+            <SignOut />
+          </>
+        ) : <Link href="/">Ir para o treino</Link>}
       </nav>
     </header>
   );
