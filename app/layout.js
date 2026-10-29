@@ -8,7 +8,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        {children}
+        <footer className="rodape">Feito por [NOME DA DUPLA] · Do Zero ao Ar · Afesu Veleiros 2026</footer>
+      </body>
     </html>
   );
 }

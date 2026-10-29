@@ -21,6 +21,15 @@
   --fonte-titulos: "Bright Melody", Georgia, "Times New Roman", serif;
 }
 
+.rodape {
+  padding: 20px 24px 28px;
+  text-align: center;
+  color: var(--cor-secundaria);
+  font-size: .75rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
 * { box-sizing: border-box; }
 html { color-scheme: light; }
 body {
